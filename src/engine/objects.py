@@ -2,12 +2,22 @@ import random
 from operator import attrgetter
 from typing import Union, Callable
 
+import pygame.event
+
 from src.engine.sounds import SoundManager
 from src.engine.utils import *
 from src.engine.config import *
 
 
-class BaseObject:
+class BaseStructure:
+    def update(self, events: list[pygame.event.Event]):
+        pass
+
+    def draw(self, surf: pygame.Surface):
+        pass
+
+
+class BaseObject(BaseStructure):
     def __init__(self, x=0, y=0):
         self.x, self.y = x, y
         self.alive = True
@@ -68,6 +78,12 @@ class AppearSprite(BaseObject):
         self.surf.blit(self.sprite, pos)
         return self.surf
 
+    def skip(self):
+        self.c_x = self.sprite.get_width()
+        self.x_done = True
+        self.c_v = self.sprite.get_height()
+        self.y_done = True
+
     def update(self, events: list[pygame.event.Event]):
         if self.timer.tick:
             self.c_v += self.speed
@@ -119,6 +135,7 @@ class Player(BaseObject):
     }
 
     TOTAL_LIVES = 3
+
     # lives = TOTAL_LIVES
 
     def __init__(self, x=WIDTH // 2, y=HEIGHT // 2, intermission=0):
@@ -564,7 +581,7 @@ class EntryAnimationObject(BaseObject):
                 # draw_rect(surf, 'black', rect, 2)
 
 
-class ObjectManager:
+class ObjectManager(BaseStructure):
     def __init__(self):
         self.objects: list[BaseObject] = []
         self._to_add: list[BaseObject] = []

@@ -5,6 +5,8 @@ import traceback
 from pathlib import Path
 from typing import Optional
 
+import pygame
+
 from src.engine.config import *
 from src.engine.objects import *
 from src.engine.save import WASMFetch
@@ -92,6 +94,9 @@ class Scene(metaclass=MetaClass):
         self.show_traceback = False
         self.error_size = 25
 
+    def on_switch(self):
+        pass
+
     def raise_error(self, exception: Exception):
         self.error = exception
 
@@ -113,14 +118,17 @@ class UnloadedScene(Scene):
 
 
 class Home(Scene):
-    pass
+    def update(self, events: list[pygame.event.Event]):
+        for e in events:
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                self.manager.switch_mode('boss1introscene')
 
 
 class Game(Scene):
     pass
 
 
-class SceneManager:
+class SceneManager(BaseStructure):
     def __init__(self):
         self.to_switch = 'none'  # to-switch transition
         self.to_reset = False
@@ -147,12 +155,12 @@ class SceneManager:
                         self.menu_references[obj.__name__.lower()] = obj
             except ImportError:
                 print(f"Could not import scene {scene_name}")
-        self.menus = {}
+        self.menus: dict[str, Scene] = {}
         for i, _ in self.menu_references.items():
             self.menus[i] = self.menu_references.get(i)(self, i)
-        print(self.menus)
-        self.mode = 'boss1scene'
+        self.mode = 'home'
         self.menu = self.menus[self.mode]
+        self.menu.on_switch()
         self.mode_stack = []  # for stack based scene rendering
         self._default_reset = False
         self._default_transition = False
@@ -181,6 +189,7 @@ class SceneManager:
                     self.mode_stack.append(self.mode)
                 self.mode = mode
                 self.menu = self.menus[self.mode]
+                self.menu.on_switch()
                 if reset:
                     self.menu.reset()
                 self._subtitle_manager.clear()

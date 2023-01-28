@@ -1,4 +1,5 @@
 import asyncio
+import time
 from pathlib import Path
 
 import pygame
@@ -6,6 +7,7 @@ import pygame
 from src.engine.scene import SceneManager
 from src.engine.config import *
 from src.engine.sounds import SoundManager
+from src.engine.utils import clamp
 
 parent = Path(__file__).parent
 sys.path.append(parent.absolute().__str__())
@@ -30,7 +32,7 @@ except pygame.error:
 class Game:
     def __init__(self):
         flags = pygame.SCALED | pygame.FULLSCREEN
-        full_screen = False
+        full_screen = True
         if full_screen:
             self.screen = pygame.display.set_mode((WIDTH, HEIGHT), flags)
         else:
@@ -51,6 +53,7 @@ class Game:
             self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     async def run(self):
+        # time.sleep(20)
         while True:
             events = pygame.event.get()
             for e in events:
@@ -72,5 +75,10 @@ class Game:
             # pygame.draw.rect(self.screen, 'black', VIEWPORT_RECT, 2)
             pygame.display.update()
             # self.renderer.present()
-            self.clock.tick(FPS)
+            self.clock.tick(60)
+            try:
+                dt = TARGET_FPS / self.clock.get_fps()
+            except ZeroDivisionError:
+                dt = 1
+            dt = clamp(dt, 0.1, 2)
             # print(self.clock.get_fps())

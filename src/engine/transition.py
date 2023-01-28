@@ -1,6 +1,7 @@
 import pygame
 
 from src.engine.config import WIDTH, HEIGHT
+from src.engine.objects import BaseStructure
 from src.engine.utils import clamp
 
 
@@ -129,7 +130,7 @@ class FadeTransition(Transition):
         surf.blit(self.surf, (0, 0))
 
 
-class TransitionManager:
+class TransitionManager(BaseStructure):
     def __init__(self):
         self.transition: Transition = SquareTransition()
         self.transitions = {

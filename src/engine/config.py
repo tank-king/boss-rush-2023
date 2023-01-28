@@ -6,8 +6,8 @@ import pygame
 
 GAME_NAME = 'boss rush 2023'
 
-WIDTH = 1000  # width of the screen
-HEIGHT = 850  # height of the screen
+WIDTH = 1280  # width of the screen
+HEIGHT = 720  # height of the screen
 SCREEN_RECT = pygame.Rect(0, 0, WIDTH, HEIGHT)
 SCREEN_COLLISION_RECT = SCREEN_RECT.inflate(100, 100)
 
@@ -21,7 +21,8 @@ VIEWPORT_RECT = pygame.Rect(
 BG_COlOR = (247, 213, 147)
 TEXT_COLOR = '#511309'
 VOLUME = 100  # sound volume
-FPS = 60
+FPS = 0
+TARGET_FPS = 60
 ASSETS = 'assets'
 
 SONG_FINISHED_EVENT = pygame.event.custom_type()

@@ -1,5 +1,6 @@
 import pygame
 
+from src.engine.objects import BaseStructure
 from src.engine.sounds import SoundManager
 from src.engine.utils import Timer, text
 from src.engine.config import WIDTH, HEIGHT
@@ -63,7 +64,7 @@ def get_typed_subtitles(_text, _time=2, _time_diff=0.05, pos=None, callback=None
     return subtitles
 
 
-class SubtitleManager:
+class SubtitleManager(BaseStructure):
     def __init__(self):
         self.subtitles = [
             # Subtitle('yo', 1),
